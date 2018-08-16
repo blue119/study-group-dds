@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+    application:
+        image: nginx:alpine
+        volumes:
+          - ./application/default.conf:/etc/nginx/conf.d/default.conf:ro
+          - ./application/index.html:/usr/share/nginx/html/index.html:ro
+
+    sidecar:
+        image: nginx:alpine
+
+        volumes:
+          - ./sidecar/index.html:/usr/share/nginx/html/index.html:ro
+          - ./sidecar/nginx.key:/etc/nginx/ssl/nginx.key:ro
+          - ./sidecar/nginx.crt:/etc/nginx/ssl/nginx.crt:ro
+          - ./sidecar/default.conf:/etc/nginx/conf.d/default.conf:ro
+
+        network_mode: "service:application"
+        depends_on:
+            - application
+
